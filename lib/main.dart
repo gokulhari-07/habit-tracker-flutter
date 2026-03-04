@@ -241,6 +241,9 @@ After runApp() → Not required
 “We initialize infrastructure like the database before runApp() to ensure all dependencies are ready before the UI starts. This improves startup performance, centralizes error handling, and maintains clean architectural separation between infrastructure and presentation layers. 
 
 WidgetsFlutterBinding.ensureInitialized() is required only when performing asynchronous platform-dependent initialization before runApp(). If initialization occurs after runApp(), the binding is already initialized automatically.” */
-  runApp(ProviderScope(child: const MyApp()));
+  
+  runApp(ProviderScope(
+    child: const MyApp(),
+    ));
 }
 
