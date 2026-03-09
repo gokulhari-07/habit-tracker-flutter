@@ -110,7 +110,10 @@ class HabitCard extends ConsumerWidget {
             },
           ),
         ),
-        onTap: () => Navigator.pushNamed(context, '/habit/${habit.id}'),
+        onTap: () async {
+          await Navigator.pushNamed(context, '/habit/${habit.id}');
+          ref.invalidate(habitsProvider);
+        },
       ),
     );
   }
