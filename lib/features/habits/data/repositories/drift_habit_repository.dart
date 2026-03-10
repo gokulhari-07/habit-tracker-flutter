@@ -107,4 +107,15 @@ class DriftHabitRepository implements HabitRepository {
 
     return existing?.isCompleted ?? false;
   }
+
+  @override
+  Future<HabitEntity?> getHabitById(int id) async {
+    final row = await (_db.select(
+      _db.habits,
+    )..where((t) => t.id.equals(id))).getSingleOrNull();
+
+    if (row == null) return null;
+
+    return HabitEntity(id: row.id, name: row.name, createdAt: row.createdAt);
+  }
 }

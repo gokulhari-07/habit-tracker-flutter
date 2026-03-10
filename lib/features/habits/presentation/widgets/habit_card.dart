@@ -45,6 +45,7 @@ class HabitCard extends ConsumerWidget {
               final todayDate = DateTime(today.year, today.month, today.day);
               await repo.toggleCompletion(habit.id, todayDate, value ?? false);
               ref.invalidate(isCompletedTodayProvider(habit.id));
+              ref.invalidate(habitCompletionsProvider(habit.id));
               ref.invalidate(habitsProvider);
             },
           ),

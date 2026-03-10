@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:habit_tracker/core/database/database_provider.dart';
 import 'package:habit_tracker/features/habits/domain/entities/habit_entity.dart';
+import 'package:habit_tracker/features/habits/presentation/providers/habit_providers.dart';
 
 class AddEditHabitScreen extends ConsumerStatefulWidget {
   const AddEditHabitScreen({super.key, this.habit});
@@ -77,7 +78,10 @@ class _AddEditHabitScreenState extends ConsumerState<AddEditHabitScreen> {
     final repo = ref.read(habitRepositoryProvider);
     await repo.deleteHabit(widget.habit!.id);
 
-    if (mounted) Navigator.pop(context);
+    if (mounted) {
+      ref.invalidate(habitsProvider);
+      Navigator.popUntil(context, ModalRoute.withName('/'));
+    }
   }
 
   @override
