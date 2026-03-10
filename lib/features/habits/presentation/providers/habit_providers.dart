@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:habit_tracker/core/database/database_provider.dart';
 import 'package:habit_tracker/features/habits/domain/entities/habit_completion_entity.dart';
 import 'package:habit_tracker/features/habits/domain/entities/habit_entity.dart';
+import 'package:habit_tracker/features/habits/domain/services/streak_service.dart';
 
 // Fetches all habits
 final habitsProvider = FutureProvider<List<HabitEntity>>((ref) async {
@@ -23,4 +24,13 @@ final habitByIdProvider = FutureProvider.family<HabitEntity?, int>((ref, id) asy
 final habitCompletionsProvider = FutureProvider.family<List<HabitCompletionEntity>, int>((ref, id) async {
   final repo = ref.watch(habitRepositoryProvider);
   return repo.getCompletionsForHabit(id);
+});
+
+final habitStreakProvider = FutureProvider.family<int, int>((ref, habitId) async {
+  final completions = await ref.watch(habitCompletionsProvider(habitId).future);
+  final completedDates = completions
+      .where((c) => c.isCompleted)
+      .map((c) => c.date)
+      .toList();
+  return StreakService.calculateCurrentStreak(completedDates);
 });

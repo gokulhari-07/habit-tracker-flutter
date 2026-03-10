@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:habit_tracker/core/database/database_provider.dart';
-import 'package:habit_tracker/features/habits/domain/entities/habit_entity.dart' show HabitEntity;
-import 'package:habit_tracker/features/habits/domain/services/streak_service.dart';
+import 'package:habit_tracker/features/habits/domain/entities/habit_entity.dart';
 import 'package:habit_tracker/features/habits/presentation/providers/habit_providers.dart';
 
 class HabitCard extends ConsumerWidget {
   final HabitEntity habit;
-
   const HabitCard({super.key, required this.habit});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isCompletedAsync = ref.watch(isCompletedTodayProvider(habit.id));
+    final streakAsync = ref.watch(habitStreakProvider(habit.id));
 
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
@@ -21,14 +20,12 @@ class HabitCard extends ConsumerWidget {
           habit.name,
           style: const TextStyle(fontWeight: FontWeight.w600),
         ),
-        subtitle: FutureBuilder<int>(
-          future: _getStreak(ref, habit.id),
-          builder: (context, snapshot) {
-            final streak = snapshot.data ?? 0;
-            return Text(
-              streak > 0 ? '🔥 $streak day streak' : 'Start your streak today!',
-            );
-          },
+        subtitle: streakAsync.when(
+          loading: () => const Text(''),
+          error: (_, __) => const Text(''),
+          data: (streak) => Text(
+            streak > 0 ? '🔥 $streak day streak' : 'Start your streak today!',
+          ),
         ),
         trailing: isCompletedAsync.when(
           loading: () => const SizedBox(
@@ -53,18 +50,9 @@ class HabitCard extends ConsumerWidget {
         onTap: () async {
           await Navigator.pushNamed(context, '/habit/${habit.id}');
           ref.invalidate(habitsProvider);
+          ref.invalidate(habitCompletionsProvider(habit.id));
         },
       ),
     );
-  }
-
-  Future<int> _getStreak(WidgetRef ref, int habitId) async {
-    final repo = ref.read(habitRepositoryProvider);
-    final completions = await repo.getCompletionsForHabit(habitId);
-    final completedDates = completions
-        .where((c) => c.isCompleted)
-        .map((c) => c.date)
-        .toList();
-    return StreakService.calculateCurrentStreak(completedDates);
   }
 }

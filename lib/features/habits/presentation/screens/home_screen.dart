@@ -25,20 +25,21 @@ class HomeScreen extends ConsumerWidget {
         error: (e, _) => Center(child: Text('Error: $e')),
         data: (habits) {
           if (habits.isEmpty) {
-            return const Center(
+            return  Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.self_improvement, size: 64, color: Colors.grey),
+                  Icon(Icons.self_improvement, size: 64, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.4),
+                  ),
                   SizedBox(height: 16),
                   Text(
                     'No habits yet',
-                    style: TextStyle(fontSize: 20, color: Colors.grey),
+                    style: TextStyle(fontSize: 20, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.4),),
                   ),
                   SizedBox(height: 8),
                   Text(
                     'Tap + to add your first habit',
-                    style: TextStyle(color: Colors.grey),
+                    style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.4),),
                   ),
                 ],
               ),
