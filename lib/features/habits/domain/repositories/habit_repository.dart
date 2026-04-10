@@ -1,5 +1,5 @@
-import 'package:habit_tracker/features/habits/domain/entities/habit_completion_entity.dart';
-import 'package:habit_tracker/features/habits/domain/entities/habit_entity.dart';
+import 'package:onward/features/habits/domain/entities/habit_completion_entity.dart';
+import 'package:onward/features/habits/domain/entities/habit_entity.dart';
 
 abstract class HabitRepository {
   // Habit CRUD

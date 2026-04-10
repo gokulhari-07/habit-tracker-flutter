@@ -1,6 +1,6 @@
-name: habit_tracker
-description: "A local-first habit tracker with streak tracking and completion history."
-version: 1.0.0+1
+name: onward
+description: "Onward — Build habits, make progress, every day."
+version: 1.0.0+2
 
 environment:
   sdk: ^3.8.1

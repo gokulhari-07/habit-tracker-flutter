@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:habit_tracker/features/habits/data/repositories/drift_habit_repository.dart';
-import 'package:habit_tracker/features/habits/domain/repositories/habit_repository.dart';
+import 'package:onward/features/habits/data/repositories/drift_habit_repository.dart';
+import 'package:onward/features/habits/domain/repositories/habit_repository.dart';
 import 'app_database.dart';
 
 final databaseProvider = Provider<AppDatabase>((ref) {

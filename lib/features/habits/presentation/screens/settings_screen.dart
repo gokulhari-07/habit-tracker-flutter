@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:habit_tracker/core/providers/theme_provider.dart';
-import 'package:habit_tracker/features/habits/presentation/widgets/section_header.dart';
+import 'package:onward/core/providers/theme_provider.dart';
+import 'package:onward/features/habits/presentation/widgets/section_header.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});

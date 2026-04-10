@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:habit_tracker/core/database/database_provider.dart';
-import 'package:habit_tracker/features/habits/domain/entities/habit_completion_entity.dart';
-import 'package:habit_tracker/features/habits/domain/entities/habit_entity.dart';
-import 'package:habit_tracker/features/habits/domain/services/streak_service.dart';
+import 'package:onward/core/database/database_provider.dart';
+import 'package:onward/features/habits/domain/entities/habit_completion_entity.dart';
+import 'package:onward/features/habits/domain/entities/habit_entity.dart';
+import 'package:onward/features/habits/domain/services/streak_service.dart';
 
 // Fetches all habits
 final habitsProvider = FutureProvider<List<HabitEntity>>((ref) async {

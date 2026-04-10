@@ -1,8 +1,8 @@
 import 'package:drift/drift.dart';
-import 'package:habit_tracker/core/database/app_database.dart';
-import 'package:habit_tracker/features/habits/domain/entities/habit_completion_entity.dart';
-import 'package:habit_tracker/features/habits/domain/entities/habit_entity.dart';
-import 'package:habit_tracker/features/habits/domain/repositories/habit_repository.dart';
+import 'package:onward/core/database/app_database.dart';
+import 'package:onward/features/habits/domain/entities/habit_completion_entity.dart';
+import 'package:onward/features/habits/domain/entities/habit_entity.dart';
+import 'package:onward/features/habits/domain/repositories/habit_repository.dart';
 
 class DriftHabitRepository implements HabitRepository {
   final AppDatabase _db;

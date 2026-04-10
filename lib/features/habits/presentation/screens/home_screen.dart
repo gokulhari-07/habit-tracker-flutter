@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:habit_tracker/features/habits/presentation/providers/habit_providers.dart';
-import 'package:habit_tracker/features/habits/presentation/widgets/habit_card.dart';
+import 'package:onward/features/habits/presentation/providers/habit_providers.dart';
+import 'package:onward/features/habits/presentation/widgets/habit_card.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});

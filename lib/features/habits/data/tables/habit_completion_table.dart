@@ -1,5 +1,5 @@
 import 'package:drift/drift.dart';
-import 'package:habit_tracker/features/habits/data/tables/habit_table.dart';
+import 'package:onward/features/habits/data/tables/habit_table.dart';
 
 class HabitCompletions extends Table {
   IntColumn get id => integer().autoIncrement()();

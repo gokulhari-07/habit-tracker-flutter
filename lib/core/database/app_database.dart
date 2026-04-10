@@ -3,8 +3,8 @@ import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
-import 'package:habit_tracker/features/habits/data/tables/habit_table.dart';
-import 'package:habit_tracker/features/habits/data/tables/habit_completion_table.dart';
+import 'package:onward/features/habits/data/tables/habit_table.dart';
+import 'package:onward/features/habits/data/tables/habit_completion_table.dart';
 
 part 'app_database.g.dart';
 

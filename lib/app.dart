@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:habit_tracker/core/providers/theme_provider.dart';
-import 'package:habit_tracker/core/theme/app_theme.dart';
-import 'package:habit_tracker/features/habits/domain/entities/habit_entity.dart';
-import 'package:habit_tracker/features/habits/presentation/screens/add_edit_habit_screen.dart';
-import 'package:habit_tracker/features/habits/presentation/screens/habit_detail_screen.dart';
-import 'package:habit_tracker/features/habits/presentation/screens/home_screen.dart';
-import 'package:habit_tracker/features/habits/presentation/screens/settings_screen.dart';
+import 'package:onward/core/providers/theme_provider.dart';
+import 'package:onward/core/theme/app_theme.dart';
+import 'package:onward/features/habits/domain/entities/habit_entity.dart';
+import 'package:onward/features/habits/presentation/screens/add_edit_habit_screen.dart';
+import 'package:onward/features/habits/presentation/screens/habit_detail_screen.dart';
+import 'package:onward/features/habits/presentation/screens/home_screen.dart';
+import 'package:onward/features/habits/presentation/screens/settings_screen.dart';
 
 class MyApp extends ConsumerWidget {
   const MyApp({super.key});
@@ -15,6 +15,7 @@ class MyApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final themeMode = ref.watch(themeModeProvider);
     return MaterialApp(
+      title: "Onward",
       debugShowCheckedModeBanner: false,
       initialRoute: "/",
       routes: {
