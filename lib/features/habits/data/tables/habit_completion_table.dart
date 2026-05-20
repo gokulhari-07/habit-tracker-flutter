@@ -6,4 +6,10 @@ class HabitCompletions extends Table {
   IntColumn get habitId => integer().references(Habits, #id)();
   DateTimeColumn get date => dateTime()();
   BoolColumn get isCompleted => boolean().withDefault(const Constant(false))();
+  
+  @override
+  List<Set<Column>> get uniqueKeys => [
+        {habitId, date},
+  ];
+
 }

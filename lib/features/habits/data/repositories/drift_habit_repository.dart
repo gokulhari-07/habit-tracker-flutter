@@ -48,11 +48,13 @@ class DriftHabitRepository implements HabitRepository {
     DateTime date,
     bool isCompleted,
   ) async {
+    final normalizedDate = DateTime(date.year, date.month, date.day);
+
     // Check if a record already exists for this habit on this date
     final existing =
         await (_db.select(_db.habitCompletions)
               ..where((t) => t.habitId.equals(habitId))
-              ..where((t) => t.date.equals(date)))
+              ..where((t) => t.date.equals(normalizedDate)))
             .getSingleOrNull();
 
     if (existing == null) {
@@ -62,7 +64,7 @@ class DriftHabitRepository implements HabitRepository {
           .insert(
             HabitCompletionsCompanion.insert(
               habitId: habitId,
-              date: date,
+              date: normalizedDate,
               isCompleted: Value(isCompleted),
             ),
           );
