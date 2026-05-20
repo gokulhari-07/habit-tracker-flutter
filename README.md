@@ -14,7 +14,7 @@ Onward helps you build powerful daily habits through simple tracking and streak 
 
 ## Features
 
-- **Daily Habit Tracking** — Add, edit, and delete habits. Mark habits complete with a single tap.
+- **Daily Habit Tracking** — Add ,  edit, and delete habits. Mark habits complete with a single tap.
 - **Streak Tracking** — Current streak and longest streak calculated automatically. Streaks break if a day is missed.
 - **Completion Calendar** — Monthly calendar view showing every day a habit was completed. Visualize your consistency at a glance.
 - **Dark & Light Mode** — Full Material 3 theming. Follows system theme or set manually in settings.
