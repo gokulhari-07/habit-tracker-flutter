@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:onward/features/habits/domain/entities/habit_entity.dart';
 import 'package:onward/features/habits/domain/services/streak_service.dart';
 import 'package:onward/features/habits/presentation/providers/habit_providers.dart';
-import 'package:onward/core/database/database_provider.dart';
+import 'package:onward/features/habits/presentation/ui_models/habit_ui_model.dart';
 
 class HabitDetailScreen extends ConsumerWidget {
   final int habitId;
@@ -11,30 +11,19 @@ class HabitDetailScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final habitAsync = ref.watch(habitByIdProvider(habitId));
+    final habit = ref.watch(selectedHabitProvider(habitId));
 
-    return habitAsync.when(
-      loading: () => const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      ),
-      error: (e, _) => Scaffold(
-        body: Center(child: Text('Error: $e')),
-      ),
-      data: (habit) {
-        if (habit == null) {
-          return const Scaffold(
-            body: Center(child: Text('Habit not found')),
-          );
-        }
-        return _HabitDetailView(habit: habit);
-      },
-    );
+    if (habit == null) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+
+    return _HabitDetailView(habit: habit);
   }
 }
 
 // ── Main Detail View ───────────────────────────────────────────
 class _HabitDetailView extends ConsumerWidget {
-  final HabitEntity habit;
+  final HabitUiModel habit;
   const _HabitDetailView({required this.habit});
 
   @override
@@ -51,16 +40,18 @@ class _HabitDetailView extends ConsumerWidget {
               await Navigator.pushNamed(
                 context,
                 '/edit',
-                arguments: habit,
+                arguments: HabitEntity(
+                  id: habit.id,
+                  name: habit.name,
+                  createdAt: habit.createdAt,
+                ),
               );
-              ref.invalidate(habitByIdProvider(habit.id));
-              ref.invalidate(habitCompletionsProvider(habit.id));
             },
           ),
         ],
       ),
       body: completionsAsync.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
+        loading: () =>const SizedBox.shrink(), //const Center(child: CircularProgressIndicator()),
         error: (e, _) => Center(child: Text('Error: $e')),
         data: (completions) {
           final completedDates = completions
@@ -68,10 +59,12 @@ class _HabitDetailView extends ConsumerWidget {
               .map((c) => c.date)
               .toList();
 
-          final currentStreak =
-              StreakService.calculateCurrentStreak(completedDates);
-          final longestStreak =
-              StreakService.calculateLongestStreak(completedDates);
+          final currentStreak = StreakService.calculateCurrentStreak(
+            completedDates,
+          );
+          final longestStreak = StreakService.calculateLongestStreak(
+            completedDates,
+          );
 
           return ListView(
             padding: const EdgeInsets.all(16),
@@ -81,10 +74,7 @@ class _HabitDetailView extends ConsumerWidget {
                 longestStreak: longestStreak,
               ),
               const SizedBox(height: 24),
-              _CalendarSection(
-                habit: habit,
-                completions: completions,
-              ),
+              _CalendarSection(habit: habit, completions: completions),
             ],
           );
         },
@@ -155,19 +145,13 @@ class _StatCard extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               value,
-              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+              style: Theme.of(
+                context,
+              ).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
-            Text(
-              unit,
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
+            Text(unit, style: Theme.of(context).textTheme.bodySmall),
             const SizedBox(height: 4),
-            Text(
-              label,
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
+            Text(label, style: Theme.of(context).textTheme.bodyMedium),
           ],
         ),
       ),
@@ -177,13 +161,10 @@ class _StatCard extends StatelessWidget {
 
 // ── Calendar Section ───────────────────────────────────────────
 class _CalendarSection extends ConsumerWidget {
-  final HabitEntity habit;
+  final HabitUiModel habit;
   final List completions;
 
-  const _CalendarSection({
-    required this.habit,
-    required this.completions,
-  });
+  const _CalendarSection({required this.habit, required this.completions});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -201,26 +182,28 @@ class _CalendarSection extends ConsumerWidget {
       children: [
         Text(
           _monthName(now.month),
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+          style: Theme.of(
+            context,
+          ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 12),
         // Weekday headers
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: ['M', 'T', 'W', 'T', 'F', 'S', 'S']
-              .map((d) => SizedBox(
-                    width: 36,
-                    child: Center(
-                      child: Text(
-                        d,
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              fontWeight: FontWeight.w600,
-                            ),
+              .map(
+                (d) => SizedBox(
+                  width: 36,
+                  child: Center(
+                    child: Text(
+                      d,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
-                  ))
+                  ),
+                ),
+              )
               .toList(),
         ),
         const SizedBox(height: 8),
@@ -249,19 +232,18 @@ class _CalendarSection extends ConsumerWidget {
               isCompleted: isCompleted,
               isToday: isToday,
               isFuture: isFuture,
-              onTap: isFuture
-                  ? null
-                  : () async {
-                      final repo = ref.read(habitRepositoryProvider);
-                      await repo.toggleCompletion(
-                        habit.id,
-                        date,
-                        !isCompleted,
-                      );
-                      ref.invalidate(habitCompletionsProvider(habit.id));
-                      ref.invalidate(isCompletedTodayProvider(habit.id));
-                      ref.invalidate(habitsProvider);
-                    },
+              onTap: null, //disabled like this tmporarily and will do the proper refactoring later. 
+              // onTap: isFuture
+              //     ? null
+              //     : () async {
+              //         await ref
+              //             .read(habitsProvider.notifier)
+              //             .toggleHabitCompletion(
+              //               habitId: habit.id,
+              //               date: date,
+              //               isCompleted: !isCompleted,
+              //             );
+              //       },
             );
           },
         ),
@@ -271,9 +253,18 @@ class _CalendarSection extends ConsumerWidget {
 
   String _monthName(int month) {
     const months = [
-      'January', 'February', 'March', 'April',
-      'May', 'June', 'July', 'August',
-      'September', 'October', 'November', 'December'
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December',
     ];
     return months[month - 1];
   }
