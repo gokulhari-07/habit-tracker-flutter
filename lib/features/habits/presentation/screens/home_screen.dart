@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:onward/features/auth/presentation/providers/auth_controller.dart';
 import 'package:onward/features/habits/presentation/providers/habit_providers.dart';
 import 'package:onward/features/habits/presentation/widgets/habit_card.dart';
 
@@ -20,6 +21,12 @@ class HomeScreen extends ConsumerWidget {
             icon: const Icon(Icons.settings),
             onPressed: () => Navigator.pushNamed(context, '/settings'),
           ),
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () async {
+              await ref.read(authControllerProvider.notifier).signOut();
+            },
+          ),
         ],
       ),
       body: habitsAsync.when(
@@ -27,21 +34,35 @@ class HomeScreen extends ConsumerWidget {
         error: (e, _) => Center(child: Text('Error: $e')),
         data: (habits) {
           if (habits.isEmpty) {
-            return  Center(
+            return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.self_improvement, size: 64, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.4),
+                  Icon(
+                    Icons.self_improvement,
+                    size: 64,
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSurface.withOpacity(0.4),
                   ),
                   SizedBox(height: 16),
                   Text(
                     'No habits yet',
-                    style: TextStyle(fontSize: 20, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.4),),
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.onSurface.withOpacity(0.4),
+                    ),
                   ),
                   SizedBox(height: 8),
                   Text(
                     'Tap + to add your first habit',
-                    style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.4),),
+                    style: TextStyle(
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.onSurface.withOpacity(0.4),
+                    ),
                   ),
                 ],
               ),
@@ -66,5 +87,3 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 }
-
-

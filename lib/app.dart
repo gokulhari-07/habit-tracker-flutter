@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:onward/core/providers/theme_provider.dart';
 import 'package:onward/core/theme/app_theme.dart';
+import 'package:onward/features/auth/presentation/screens/auth_gate_screen.dart';
+import 'package:onward/features/auth/presentation/screens/auth_test_screen.dart';
 import 'package:onward/features/habits/domain/entities/habit_entity.dart';
 import 'package:onward/features/habits/presentation/screens/add_edit_habit_screen.dart';
 import 'package:onward/features/habits/presentation/screens/habit_detail_screen.dart';
@@ -20,7 +22,7 @@ class MyApp extends ConsumerWidget {
       initialRoute: "/",
       routes: {
         //for v1, we use named routes. Later in v2, we will use goRouter or Navigator 2.0
-        '/': (_) => const HomeScreen(),
+        '/': (_) => const AuthGateScreen(),  //const HomeScreen(),
         '/add': (_) => const AddEditHabitScreen(),
         '/settings': (_) => const SettingsScreen(),
       },

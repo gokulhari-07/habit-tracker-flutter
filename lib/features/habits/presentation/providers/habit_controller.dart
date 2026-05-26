@@ -1,6 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:onward/core/database/database_provider.dart';
-import 'package:onward/features/habits/domain/entities/habit_completion_entity.dart';
 import 'package:onward/features/habits/domain/services/streak_service.dart';
 import 'package:onward/features/habits/presentation/ui_models/habit_ui_model.dart';
 

@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "178555985064",
+    "project_id": "onward-f2e6e",
+    "storage_bucket": "onward-f2e6e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:178555985064:android:1d9dc4de0e54b6a9e3f69d",
+        "android_client_info": {
+          "package_name": "com.gokulhari.onward"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "178555985064-u70ul3iqfuec72j89t39r8v7bmsodf2l.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.gokulhari.onward",
+            "certificate_hash": "3c2f2a72afe5096f578415ef147fcf890e10093a"
+          }
+        },
+        {
+          "client_id": "178555985064-jg4dqj8k3alnae3gfvkpjm975ooqbcel.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCiHZ0EgQMJiuYUekoNHKEDBdyx8rg1M9o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "178555985064-jg4dqj8k3alnae3gfvkpjm975ooqbcel.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "178555985064-hq7tjuhj9tmr129d71uaf2pmmqtvsfdg.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.habitTracker"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -46,6 +46,7 @@ class _HabitDetailView extends ConsumerWidget {
                   createdAt: habit.createdAt,
                 ),
               );
+              ref.invalidate(habitsProvider);
             },
           ),
         ],
