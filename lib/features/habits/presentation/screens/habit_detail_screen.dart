@@ -44,6 +44,7 @@ class _HabitDetailView extends ConsumerWidget {
                   id: habit.id,
                   name: habit.name,
                   createdAt: habit.createdAt,
+                  updatedAt: habit.updatedAt
                 ),
               );
               ref.invalidate(habitsProvider);

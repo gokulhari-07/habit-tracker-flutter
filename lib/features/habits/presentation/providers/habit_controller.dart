@@ -29,8 +29,10 @@ class HabitController extends AsyncNotifier<List<HabitUiModel>> {
           id: habit.id,
           name: habit.name,
           createdAt: habit.createdAt,
+           updatedAt:habit.updatedAt,
           isCompletedToday: isCompletedToday,
           currentStreak: streak,
+         
         ),
       );
     }

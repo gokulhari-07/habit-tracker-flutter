@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:onward/features/auth/presentation/providers/auth_controller.dart';
+import 'package:onward/features/habits/data/sync/sync_providers.dart';
 import 'package:onward/features/habits/presentation/providers/habit_providers.dart';
 import 'package:onward/features/habits/presentation/widgets/habit_card.dart';
 
@@ -25,6 +26,24 @@ class HomeScreen extends ConsumerWidget {
             icon: const Icon(Icons.logout),
             onPressed: () async {
               await ref.read(authControllerProvider.notifier).signOut();
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.cloud_upload),
+            onPressed: () async {
+              final user = ref.read(authControllerProvider).value;
+
+              if (user == null) return;
+
+              final syncService = ref.read(habitSyncServiceProvider);
+
+              await syncService.syncHabitsToCloud(uid: user.uid);
+
+              if (context.mounted) {
+                ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(const SnackBar(content: Text('Habits synced')));
+              }
             },
           ),
         ],

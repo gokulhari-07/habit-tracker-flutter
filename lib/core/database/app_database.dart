@@ -8,12 +8,26 @@ import 'package:onward/features/habits/data/tables/habit_completion_table.dart';
 
 part 'app_database.g.dart';
 
-@DriftDatabase(tables: [Habits, HabitCompletions])  // ← Updated
+@DriftDatabase(tables: [Habits, HabitCompletions])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
+
+  @override
+  MigrationStrategy get migration => MigrationStrategy(
+    onCreate: (m) async {
+      await m.createAll();
+    },
+    onUpgrade: (m, from, to) async {
+      if (from < 3) {
+        await m.addColumn(habits, habits.cloudId);
+        await m.addColumn(habits, habits.updatedAt);
+        await customStatement('UPDATE habits SET updated_at = created_at');
+      }
+    },
+  );
 }
 
 LazyDatabase _openConnection() {

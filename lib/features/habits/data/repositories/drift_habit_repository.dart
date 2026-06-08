@@ -3,6 +3,9 @@ import 'package:onward/core/database/app_database.dart';
 import 'package:onward/features/habits/domain/entities/habit_completion_entity.dart';
 import 'package:onward/features/habits/domain/entities/habit_entity.dart';
 import 'package:onward/features/habits/domain/repositories/habit_repository.dart';
+import 'package:uuid/uuid.dart';
+
+const _uuid = Uuid();
 
 class DriftHabitRepository implements HabitRepository {
   final AppDatabase _db;
@@ -18,6 +21,8 @@ class DriftHabitRepository implements HabitRepository {
             id: habit.id,
             name: habit.name,
             createdAt: habit.createdAt,
+            cloudId: habit.cloudId,
+            updatedAt: habit.updatedAt,
           ),
         )
         .toList();
@@ -25,9 +30,15 @@ class DriftHabitRepository implements HabitRepository {
 
   @override
   Future<int> addHabit(String name) async {
-    return await _db
-        .into(_db.habits)
-        .insert(HabitsCompanion.insert(name: name, createdAt: DateTime.now()));
+    final now = DateTime.now();
+    return await _db.into(_db.habits).insert(
+          HabitsCompanion.insert(
+            name: name,
+            createdAt: now,
+            cloudId: Value(_uuid.v4()),
+            updatedAt: now,
+          ),
+        );
   }
 
   @override
@@ -37,9 +48,12 @@ class DriftHabitRepository implements HabitRepository {
 
   @override
   Future<void> updateHabit(int id, String name) async {
-    await (_db.update(
-      _db.habits,
-    )..where((t) => t.id.equals(id))).write(HabitsCompanion(name: Value(name)));
+    await (_db.update(_db.habits)..where((t) => t.id.equals(id))).write(
+      HabitsCompanion(
+        name: Value(name),
+        updatedAt: Value(DateTime.now()),
+      ),
+    );
   }
 
   @override
@@ -50,7 +64,6 @@ class DriftHabitRepository implements HabitRepository {
   ) async {
     final normalizedDate = DateTime(date.year, date.month, date.day);
 
-    // Check if a record already exists for this habit on this date
     final existing =
         await (_db.select(_db.habitCompletions)
               ..where((t) => t.habitId.equals(habitId))
@@ -58,10 +71,7 @@ class DriftHabitRepository implements HabitRepository {
             .getSingleOrNull();
 
     if (existing == null) {
-      // No record yet — insert one
-      await _db
-          .into(_db.habitCompletions)
-          .insert(
+      await _db.into(_db.habitCompletions).insert(
             HabitCompletionsCompanion.insert(
               habitId: habitId,
               date: normalizedDate,
@@ -69,7 +79,6 @@ class DriftHabitRepository implements HabitRepository {
             ),
           );
     } else {
-      // Record exists — update it
       await (_db.update(_db.habitCompletions)
             ..where((t) => t.id.equals(existing.id)))
           .write(HabitCompletionsCompanion(isCompleted: Value(isCompleted)));
@@ -80,9 +89,9 @@ class DriftHabitRepository implements HabitRepository {
   Future<List<HabitCompletionEntity>> getCompletionsForHabit(
     int habitId,
   ) async {
-    final completions = await (_db.select(
-      _db.habitCompletions,
-    )..where((t) => t.habitId.equals(habitId))).get();
+    final completions = await (_db.select(_db.habitCompletions)
+          ..where((t) => t.habitId.equals(habitId)))
+        .get();
 
     return completions
         .map(
@@ -112,12 +121,57 @@ class DriftHabitRepository implements HabitRepository {
 
   @override
   Future<HabitEntity?> getHabitById(int id) async {
-    final row = await (_db.select(
-      _db.habits,
-    )..where((t) => t.id.equals(id))).getSingleOrNull();
+    final row = await (_db.select(_db.habits)
+          ..where((t) => t.id.equals(id)))
+        .getSingleOrNull();
 
     if (row == null) return null;
 
-    return HabitEntity(id: row.id, name: row.name, createdAt: row.createdAt);
+    return HabitEntity(
+      id: row.id,
+      name: row.name,
+      createdAt: row.createdAt,
+      cloudId: row.cloudId,
+      updatedAt: row.updatedAt,
+    );
+  }
+
+  @override
+  Future<void> insertHabit(HabitEntity habit) async {
+    // Look up by cloudId to avoid duplicates when restoring from cloud.
+    // If a local row exists, update it only if the cloud version is newer.
+    if (habit.cloudId != null) {
+      final existing = await (_db.select(_db.habits)
+            ..where((t) => t.cloudId.equals(habit.cloudId!)))
+          .getSingleOrNull();
+
+      if (existing != null) {
+        if (habit.updatedAt.isAfter(existing.updatedAt)) {
+          await (_db.update(_db.habits)
+                ..where((t) => t.id.equals(existing.id)))
+              .write(HabitsCompanion(
+                name: Value(habit.name),
+                updatedAt: Value(habit.updatedAt),
+              ));
+        }
+        return;
+      }
+    }
+
+    // No existing local row — insert and let Drift autoassign the int id.
+    await _db.into(_db.habits).insert(
+          HabitsCompanion.insert(
+            name: habit.name,
+            createdAt: habit.createdAt,
+            cloudId: Value(habit.cloudId),
+            updatedAt: habit.updatedAt,
+          ),
+        );
+  }
+
+  @override
+  Future<void> clearAllData() async {
+    await _db.delete(_db.habitCompletions).go();
+    await _db.delete(_db.habits).go();
   }
 }

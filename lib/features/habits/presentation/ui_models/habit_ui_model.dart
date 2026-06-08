@@ -2,9 +2,10 @@ class HabitUiModel {
   final int id;
   final String name;
   final DateTime createdAt;
-
+  final DateTime updatedAt;
   final bool isCompletedToday;
   final int currentStreak;
+
 
   const HabitUiModel({
     required this.id,
@@ -12,5 +13,6 @@ class HabitUiModel {
     required this.createdAt,
     required this.isCompletedToday,
     required this.currentStreak,
+    required this.updatedAt,
   });
 }
